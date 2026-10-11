@@ -1,0 +1,10 @@
+# .NET build output
+bin/
+obj/
+
+# FFmpeg executable
+ffmpeg.exe
+
+# IDE files
+.vs/
+.vscode/
