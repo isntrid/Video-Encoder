@@ -19,8 +19,17 @@ class Program
 
                 string directory = Path.GetDirectoryName(args[0])!;
                 string outputPath = Path.Combine(directory, "converted.mp4");
-                
-                string[] ffArgs = ["-i", args[0], "-c:v", "libx264", "-crf", "20", "-preset", "veryfast", "-c:a", "aac", outputPath, "-y"];
+
+                string[] ffArgs = [
+                                    "-i", args[0],
+                                    "-c:v", "h264_nvenc",
+                                    "-preset", "p4",
+                                    "-cq", "20",
+                                    "-b:v", "0",
+                                    "-c:a", "aac",
+                                    "-y",
+                                    outputPath
+                                ];
 
                 foreach (string arg in ffArgs)
                 {
