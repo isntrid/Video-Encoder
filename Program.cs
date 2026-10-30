@@ -17,18 +17,25 @@ class Program
                 procInfo.FileName = @"C:\Users\ridn1\Visual Studio Code\file converter\ffmpeg.exe";
                 procInfo.CreateNoWindow = true;
 
-                string directory = Path.GetDirectoryName(args[0])!;
-                string outputPath = Path.Combine(directory, "converted.mp4");
+                string inputPath = Path.GetDirectoryName(args[0])!;
+                string folderPath = Path.Combine(inputPath, "converted files");
+                Directory.CreateDirectory(folderPath);
+                string fileName = Guid.NewGuid().ToString().Substring(0, 8);
+                string filePath = Path.Combine(folderPath, fileName + ".mp4");
+
 
                 string[] ffArgs = [
-                                    "-i", args[0],
-                                    "-c:v", "h264_nvenc",
-                                    "-preset", "p4",
-                                    "-cq", "20",
-                                    "-b:v", "0",
-                                    "-c:a", "aac",
-                                    "-y",
-                                    outputPath
+                    "-i", args[0],
+                    "-c:v", "h264_nvenc",
+                    "-preset", "p1",
+                    "-rc", "vbr",
+                    "-b:v", "12M",
+                    "-maxrate", "16M",
+                    "-bufsize", "32M",
+                    "-c:a", "aac",
+                    "-b:a", "128k",
+                    "-y",
+                    filePath
                                 ];
 
                 foreach (string arg in ffArgs)
@@ -42,19 +49,17 @@ class Program
 
                 myProcess.WaitForExit();
 
-                if (myProcess.ExitCode != 0 || !File.Exists(outputPath))
+                if (myProcess.ExitCode != 0 || !File.Exists(filePath))
                 {
                     File.WriteAllText(
-                        Path.Combine(directory, "conversion_error.txt"),
+                        Path.Combine(folderPath, "conversion_error.txt"),
                         output
                     );
 
                     return;
                 }
 
-                StringCollection files = new StringCollection();
-                files.Add(outputPath);
-
+                StringCollection files = [filePath];
                 Clipboard.SetFileDropList(files);
             }
         }
